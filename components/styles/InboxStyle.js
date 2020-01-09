@@ -8,7 +8,10 @@ height: 100vh;
 overflow-y: hidden;
 .header {
   min-height: 4rem;
-  display: flex;
+  display: none;
+  @media only screen and (min-width: ${props => props.theme.tablet}){
+    display: flex;
+  }
   .site-name {
     display: none;
     align-items: center;
@@ -40,8 +43,8 @@ overflow-y: hidden;
   .bar {
     flex: 1;
     background-color: ${props => props.theme.primary};
-    display: flex;
-    justify-content: flex-end;
+    border: 1px solid red;
+    display: flex;    
     .left-content {
       padding-left: 1rem;
       display: flex;
@@ -53,7 +56,10 @@ overflow-y: hidden;
     }
     .right-content {
       display: flex;  
-      justify-content: flex-end; 
+      justify-content: center;
+      @media only screen and (min-width: ${props => props.theme.desktop}){
+        justify-content: flex-end;
+      } 
       flex: 1;  
       .box {
         display: flex;
@@ -84,46 +90,56 @@ overflow-y: hidden;
       }
     }
   }
-  /* Inbox Select, for tablets and phones */
-  .inboxSelect {
-    @media only screen and (min-width: ${props => props.theme.desktop}){
-      display: none;
-    }
-    display: flex;
-    flex: 1;
-    border: 1px solid red;
-    ul {
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      grid-row: auto auto;
-      grid-column-gap: 20px;
-      grid-row-gap: 20px;
-    }
-  }  
-
 }
 .content {
-  display: flex;  
+  display: grid;  
+  width: 100%;
+  grid-template-columns: 1fr;
+  @media only screen and (min-width: ${props => props.theme.mobile}) {
+    grid-template-columns: 35% 65%;
+  }
+  border: 1px solid black;
 }
-.email-list {
-  border: 1px solid red;
-  height: calc(100vh - 7rem);  
-  margin-bottom: ${props => props.theme.bottomNavHeight};
+/* Inbox Select, for tablets and phones */
+.inboxSelect {
   @media only screen and (min-width: ${props => props.theme.desktop}){
+    display: none;
+  }
+  display: flex;
+  flex-grow: 1;
+  ul {
+    width: 100%;
+    display:grid;
+    justify-items: center;
+    grid-template-columns: 1fr 1fr;
+    grid-row: auto auto;
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
+    list-style: none; 
+    border-bottom: 1px solid grey;
+    padding: 1rem 0;
+
+  }
+}  
+.email-list {
+  height: calc(100vh - 3rem);  
+  margin-bottom: ${props => props.theme.bottomNavHeight};
+  @media only screen and (min-width: ${props => props.theme.mobile}){
     margin-bottom: 0;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 3rem);
   }
 	background: #f5f5f5;	
 	max-height: 100%;
-	overflow-y: auto;
-	width: 35%;
+	overflow-y: auto;	
 	&.empty {
 		color: #aaa;
 		padding-top: 200px;
 		text-align: center;
-	}
-	
-	.email-item {
+  }
+
+	.email-item {      
+    overflow-y: hidden; 
+    min-width: 0;
 		background: #fff;
 		border-bottom: 1px solid #eee;
 		cursor: pointer;
@@ -133,17 +149,21 @@ overflow-y: hidden;
 			color: #009fc4;
 		}
 		
-		&__subject {
-			margin-bottom: 8px;
+		.name {
+      width: 100%;
+      margin-bottom: 8px;
+      padding-right: 1rem;
 		}
 		
-		&__details {
-			font-size: 12px;
+		.details {
+      overflow: hidden;
+      min-width: 0;
+      font-size: 12px;
 			opacity: .5;
 			text-transform: uppercase;
 		}
 		
-		&__unread-dot {
+		.unread-dot {
 			height: 100%;
 			right: 10px;
 			position: absolute;
@@ -159,29 +179,78 @@ overflow-y: hidden;
 			}
 		}
 		
-		&__time {
+		.time {
 			float: right;
 			text-align: right;
 			width: 40%;
 		}
 		
-		&__from.truncate {
-			width: 60%;
+		.message {
+      display: block;
+      min-width: 0;            
+      white-space: nowrap;    
+      overflow: hidden;
+      text-overflow: ellipsis; 
 		}
 		
-		&:hover:not(.selected) {
+		:hover:not(.selected) {
 			background: #fafafa;
 		}
 	}
 }
 .email-content {
- border: 1px solid red;
+ min-width: 100%;
  overflow-y: scroll;
  margin-bottom: ${props => props.theme.bottomNavHeight};
- @media only screen and (min-width: ${props => props.theme.desktop}){
+ @media only screen and (min-width: ${props => props.theme.mobile}){
     margin-bottom: 0;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 3rem);
   }
+  &__header {
+		background: #f5f5f5;
+		border-bottom: 1px solid #eee;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	}
+	
+	&__subject {
+		font-size: 18px;
+		margin: 10px 0;
+	}
+
+	&__details {
+		font-size: 12px;
+		opacity: .5;
+		text-transform: uppercase;
+	}
+
+	&__time {
+		color: #878787;
+		float: right;
+	}
+
+	&__from {
+		color: #878787;
+	}
+	
+	&__message {
+		padding: 20px 15px 15px;
+	}
+	
+	.delete-btn {
+		cursor: pointer;
+		margin: -5px;
+		padding: 5px;
+		right: 20px;
+		top: 24px;
+		transition: color .1s linear;
+		
+		&:hover {
+			color: #E23E57;
+		}
+	}
 }
 .main-content {
   display: flex;
@@ -237,7 +306,7 @@ overflow-y: hidden;
 .simple {
   display: none;
 }
-@media only screen and (max-width: ${props => props.theme.desktop}){
+@media only screen and (max-width: ${props => props.theme.tablet}){
   .simple {
     position: fixed;
     display: flex;  
@@ -246,8 +315,7 @@ overflow-y: hidden;
     margin: 0;
     width: 100vw;
     z-index: 3;
-    max-height: ${props => props.theme.bottomNavHeight};
-    border: 1px solid red;
+    max-height: ${props => props.theme.bottomNavHeight};    
   }
   nav {
     background-color: ${props => props.theme.primary};

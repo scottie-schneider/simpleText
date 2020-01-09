@@ -7,7 +7,6 @@ import '@fortawesome/fontawesome-svg-core/styles.css' // 👈
 config.autoAddCss = false // 👈
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' // 👈
-import { faBook } from '@fortawesome/pro-solid-svg-icons' // 👈
 
 //Example theme for the styledcomponents themeprovider
 const theme = {
@@ -20,6 +19,8 @@ const theme = {
   white: "#fff",
   // Media Queries
   desktop: "1200px",
+  tablet: "900px",
+  mobile: "600px",
   // Element Width
   sidebarFullWidth: "16rem",
   sidebarCollapsedWidth: "8rem",

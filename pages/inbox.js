@@ -2,7 +2,7 @@
 // https://medium.com/@felippenardi/how-to-do-componentdidmount-with-react-hooks-553ba39d1571 
 import React, { useState, useEffect } from "react";
 import InboxStyle from '../components/styles/InboxStyle'
-
+import dummyData from '../data';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faCommentAlt, faBell, faPencil, faInbox, faPaperPlane, faPencilRuler, faTrash } from '@fortawesome/pro-solid-svg-icons'
 require('isomorphic-fetch');
@@ -48,6 +48,50 @@ const Inbox = ({ conversations }) => {
         }
       }, 0)
   )
+  const [inboxCount, setInboxCount] = useState(
+    conversations.reduce(
+      function(previous, msg) {
+        if (msg.tag === "inbox") {
+          return previous + 1;
+        }
+        else {
+          return previous;
+        }
+      }, 0)
+  )
+  const [sentCount, setSentCount] = useState(
+    conversations.reduce(
+      function(previous, msg) {
+        if (msg.tag === "sent") {
+          return previous + 1;
+        }
+        else {
+          return previous;
+        }
+      }, 0)
+  )
+  const [trashCount, setTrashCount] = useState(
+    conversations.reduce(
+      function(previous, msg) {
+        if (msg.tag === "deleted") {
+          return previous + 1;
+        }
+        else {
+          return previous;
+        }
+      }, 0)
+  )
+  const [draftCount, draftSentCount] = useState(
+    conversations.reduce(
+      function(previous, msg) {
+        if (msg.tag === "drafts") {
+          return previous + 1;
+        }
+        else {
+          return previous;
+        }
+      }, 0)
+  )
   const getDisplayDate = (convo) => {
     return `${getPrettyDate(convo.time)} · ${getPrettyTime(convo.time)}`;
   }
@@ -59,37 +103,13 @@ const Inbox = ({ conversations }) => {
         <div class="site-name">
             <h1 class="desktop">SimpleText</h1>
         </div>
-        <div class="bar">
-          <div className="inboxSelect">
-            <ul>
-              <li onClick={() => { setSidebarSection('inbox'); }}>
-                <a>                  
-                  <p>Inbox</p>                  
-                </a>
-              </li>
-              <li onClick={() => { setSidebarSection('sent'); }}>
-                <a>              
-                  <p>Sent</p>            
-                </a>
-              </li>
-              <li onClick={() => { setSidebarSection('drafts'); }}>
-                <a>                
-                  <p>Drafts</p>
-                </a>
-              </li>
-              <li onClick={() => { setSidebarSection('deleted'); }}>
-                <a>                
-                  <p>Trash</p>                
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div class="bar">          
           <div class="right-content">
               <div class="messages box">
                       <a href="#">
                         <FontAwesomeIcon className="icon" icon={faCommentAlt} />
                           Messages
-                          <span>20</span>
+                          <span>{unreadCount}</span>
                       </a>
               </div>  
               <div class="messages box">
@@ -119,18 +139,18 @@ const Inbox = ({ conversations }) => {
             <li onClick={() => { setSidebarSection('inbox'); }}>
               <a>
                 <FontAwesomeIcon className="icon" icon={faInbox} />
-                <p>Inbox</p>
+                <p>Messages</p>
                 <span className="item-count">{unreadCount}</span>
               </a>
             </li>
             <li onClick={() => { setSidebarSection('sent'); }}><a>
               <FontAwesomeIcon className="icon" icon={faPaperPlane} /> 
               Sent
-              <span className="item-count">0</span></a></li>
+              <span className="item-count">{sentCount}</span></a></li>
             <li onClick={() => { setSidebarSection('drafts'); }}><a>
               <FontAwesomeIcon className="icon" icon={faPencilRuler} />
               Drafts
-              <span className="item-count">0</span>
+              <span className="item-count">{draftCount}</span>
               </a></li>
             <li onClick={() => { setSidebarSection('deleted'); }}><a>
               <FontAwesomeIcon className="icon" icon={faTrash} />
@@ -142,9 +162,33 @@ const Inbox = ({ conversations }) => {
         {/* End .sidebar */}
         <div className="content">
           {/* Tablet and Phone Inbox Selectors */}
-
+          
           {/* EMAIL LIST COMPONENT */}
           <div className="email-list">
+            <div className="inboxSelect">
+              <ul>
+                <li onClick={() => { setSidebarSection('inbox'); }}>
+                  <a>     
+                    <p>Inbox ({inboxCount})</p>                 
+                  </a>
+                </li>
+                <li onClick={() => { setSidebarSection('sent'); }}>
+                  <a>              
+                    <p>Sent ({sentCount})</p>            
+                  </a>
+                </li>
+                <li onClick={() => { setSidebarSection('drafts'); }}>
+                  <a>                
+                    <p>Drafts ({draftCount})</p>
+                  </a>
+                </li>
+                <li onClick={() => { setSidebarSection('deleted'); }}>
+                  <a>                
+                    <p>Trash ({trashCount})</p>                
+                  </a>
+                </li>
+              </ul>
+            </div>
             {
               conversations.map(conversation => {
                 return ( 
@@ -153,13 +197,13 @@ const Inbox = ({ conversations }) => {
                       console.log('set the clicked email in state and change to read')
                       setCurrentconversation(conversation)
                     }} 
-                    className={conversation !== currentConversation ? "email-item" : "selected"}
+                    className={conversation == currentConversation ? "email-item selected" : "email-item"}
                   >
                     {/* <div className="email-item__unread-dot" data-read={conversation.read}></div> */}
-                    <div className="email-item__subject truncate">{conversation.subject}</div>
-                    <div className="email-item__details">
-                      <span className="email-item__from truncate">{conversation.from}</span>
-                      <span className="email-item__time truncate">{getPrettyDate(conversation.time)}</span>
+                    <div className="name truncate">{conversation.from}</div>
+                    <div className="details">
+                      <span className="message">{conversation.message}</span>
+                      <span className="time">{getPrettyDate(conversation.time)}</span>
                     </div>
                   </div>
                 );
@@ -168,20 +212,21 @@ const Inbox = ({ conversations }) => {
           </div>
           {/* EMAIL DETAILS COMPONENT */}
           <div className="email-content">
-          <div className="email-content__header">
-            <h3 className="email-content__subject">{currentConversation.subject}</h3>
-            {currentConversation.tag !== 'deleted' ? "delete button here" : null}
-            <div className="email-content__time">{getDisplayDate(currentConversation)}</div>
-            <div className="email-content__from">{currentConversation.from}</div>
-          </div>
+            <div className="email-content__header">
+              <h3 className="email-content__subject">
+                {currentConversation.from}
+              </h3>              
+              <div className="email-content__time">{getDisplayDate(currentConversation)}</div>            
+              {currentConversation.tag !== 'deleted' ? <FontAwesomeIcon className="icon" icon={faTrash} /> : null}
+            </div>
           <div className="email-content__message">{currentConversation.message}</div>
         </div>
         </div>          
         {/* Bottom Nav */}
         <nav class="simple">
           <ul>
-            <li><a href="#">Inbox</a></li>
-            <li><a href="#">Campaigns</a></li>
+            <li><a href="#">Messages</a></li>
+            <li><a href="#">Alerts</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Sign out</a></li>
           </ul>
@@ -199,12 +244,13 @@ Inbox.getInitialProps = async function({req, res, query: { userId }}) {
     console.log('before fetch')
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       // dev code
-      conversations = await fetch('https://s3-us-west-2.amazonaws.com/s.cdpn.io/311743/dummy-emails.json')  
+      // conversations = await fetch('https://s3-us-west-2.amazonaws.com/s.cdpn.io/311743/dummy-emails.json')  
+      conversations = dummyData;
     } else {
       // production code
       conversations = await fetch(`https://s3-us-west-2.amazonaws.com/s.cdpn.io/311743/dummy-emails.json`)  
     } 
-    conversations = await conversations.json();
+    // conversations = await conversations.json();
   } catch(e){
     console.log(e)
     conversations = undefined
