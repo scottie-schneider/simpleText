@@ -4,21 +4,26 @@ import Inbox from '../../pages/inbox';
 const InboxStyle = styled.div`
 display: flex;
 flex-direction: column;
-min-height: 100%;
+height: 100vh;
+overflow-y: hidden;
 .header {
   min-height: 4rem;
   display: flex;
   .site-name {
-    display: flex;
+    display: none;
     align-items: center;
-    flex: 0 0 5rem;
-    @media only screen and (min-width: 1200px){
-      flex: 0 0 20rem;
-    }
-    background-color: ${props => props.theme.secondary};
     padding-left: 1rem;
+    flex: 0 0 ${props => props.theme.sidebarCollapsedWidth};
+    @media only screen and (min-width: ${props => props.theme.desktop}){
+      flex: 0 0 ${props => props.theme.sidebarFullWidth};
+      display: flex;      
+    }
+    background-color: ${props => props.theme.secondary};    
     h1 {
-      color: ${props => props.theme.white};
+      color: ${props => props.theme.white};      
+      @media only screen and (min-width: ${props => props.theme.desktop}){
+        margin-left: 0;
+      }
     }
     .desktop {
       display: none;
@@ -36,7 +41,7 @@ min-height: 100%;
     flex: 1;
     background-color: ${props => props.theme.primary};
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     .left-content {
       padding-left: 1rem;
       display: flex;
@@ -47,7 +52,9 @@ min-height: 100%;
       }      
     }
     .right-content {
-      display: flex;      
+      display: flex;  
+      justify-content: flex-end; 
+      flex: 1;  
       .box {
         display: flex;
         align-items: center;
@@ -65,77 +72,51 @@ min-height: 100%;
             padding: .5rem;
             border-radius: 50%;
             margin-left: .5rem;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+          }
+          .icon {
+            margin: 0 1.2rem;
           }
         }
       }
     }
   }
+  /* Inbox Select, for tablets and phones */
+  .inboxSelect {
+    @media only screen and (min-width: ${props => props.theme.desktop}){
+      display: none;
+    }
+    display: flex;
+    flex: 1;
+    border: 1px solid red;
+    ul {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      grid-row: auto auto;
+      grid-column-gap: 20px;
+      grid-row-gap: 20px;
+    }
+  }  
+
 }
-.sidebar {
-	background: ${props => props.theme.darkGray};
-	float: left;
-	height: 500px;
-	width: 200px;
-	.sidebar__inboxes {
-		margin-top: 50px;
-		.item-count {
-			background: #34393d;
-			border-radius: 5px;
-			float: right;
-			padding: 2px 8px;
-			margin: -2px -8px;
-		}
-		
-		li a {
-			color: #fff;
-			cursor: pointer;
-			display: block;
-			margin-bottom: 10px;
-			padding: 15px;
-			text-decoration: none;	
-			width: 100%;
-			
-			:hover {
-				background: #404549;
-			}
-		}
-		
-		.fa {
-			margin-right: 10px;
-		}
-	}
-	
-	.btn.compose {
-		color: #fff;
-		padding: 30px 15px;
-		text-align: center;
-		text-decoration: none;
-		transition: all .1s linear;
-		width: 100%;
-		
-		&:hover {
-			background-size: 150%;
-			
-			.fa {
-				-webkit-transform: rotate(90deg);
-				-ms-transform: rotate(90deg);
-				transform: rotate(90deg);
-			}
-		}		
-		.fa {
-			margin-left: 10px;
-			transition: all .1s linear;
-		}
-	}
+.content {
+  display: flex;  
 }
 .email-list {
-	background: #f5f5f5;
-	float: left;
-	height: 500px;
+  border: 1px solid red;
+  height: calc(100vh - 7rem);  
+  margin-bottom: ${props => props.theme.bottomNavHeight};
+  @media only screen and (min-width: ${props => props.theme.desktop}){
+    margin-bottom: 0;
+    height: calc(100vh - 4rem);
+  }
+	background: #f5f5f5;	
 	max-height: 100%;
 	overflow-y: auto;
 	width: 35%;
-	
 	&.empty {
 		color: #aaa;
 		padding-top: 200px;
@@ -146,9 +127,8 @@ min-height: 100%;
 		background: #fff;
 		border-bottom: 1px solid #eee;
 		cursor: pointer;
-		padding: 10px 15px;
+    padding: 10px 15px;
 		position: relative;
-		
 		&.selected {
 			color: #009fc4;
 		}
@@ -194,6 +174,115 @@ min-height: 100%;
 		}
 	}
 }
+.email-content {
+ border: 1px solid red;
+ overflow-y: scroll;
+ margin-bottom: ${props => props.theme.bottomNavHeight};
+ @media only screen and (min-width: ${props => props.theme.desktop}){
+    margin-bottom: 0;
+    height: calc(100vh - 4rem);
+  }
+}
+.main-content {
+  display: flex;
+}
+/* Sidebar OLD */
+.sidebar {
+  display: none;  
+  background: ${props => props.theme.darkGray};	
+  @media only screen and (min-width: ${props => props.theme.desktop}){
+      /*  sidebar becomes a bottom menu   */
+    display: block;
+    flex: 0 0 ${props => props.theme.sidebarFullWidth};
+  }
+  .sidebar__compose {
+    border: 1px solid red;
+    text-align: center;
+    list-style: none;
+    color: ${props => props.theme.white};
+    padding: 1.5rem 0;
+  }
+	.sidebar__inboxes {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    list-style: none;  
+    li {
+      width: 100%;
+      padding: 0 1rem; 
+      margin-top: 1rem;
+      a {
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        align-items: center;
+        color: ${props => props.theme.white};
+      }
+    } 
+		.item-count {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+			background: #000;
+			border-radius: 50%;			
+      width: 2rem;
+      height: 2rem;   
+      color: ${props => props.theme.white};
+      text-align: center;
+		}
+	}
+}
+/* Bottom Nav doesn't display above desktop px */
+.simple {
+  display: none;
+}
+@media only screen and (max-width: ${props => props.theme.desktop}){
+  .simple {
+    position: fixed;
+    display: flex;  
+    flex: 1;
+    bottom: 0;
+    margin: 0;
+    width: 100vw;
+    z-index: 3;
+    max-height: ${props => props.theme.bottomNavHeight};
+    border: 1px solid red;
+  }
+  nav {
+    background-color: ${props => props.theme.primary};
+  }
+  nav ul {
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  nav ul li {
+    padding: 1rem;
+  }
+  nav ul li:hover {
+    background-color: #1a2770;
+  }
+  nav ul a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+  /** Menu simple **/
+  .simple ul {
+    display: flex;
+    justify-content: space-around;
+    justify-content: space-between;
+  }
+  .simple ul li{
+    text-align:center;
+    flex:1;
+  }
+}
+
 `
 
 export default InboxStyle;

@@ -32,26 +32,7 @@ class MyDocument extends Document {
   render() {
     return (
       <html lang="en" dir="ltr">				
-        <Head>          
-          <link
-            rel="apple-touch-icon"
-            sizes="152x152"
-            href="/static/icon512.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/static/icon32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/static/icon16.png"
-          />
-          <meta name="theme-color" content="#141940"></meta>
-          <link rel="manifest" href="/static/manifest.json" />
+        <Head>                  
         </Head>
         <body>
           <Main />

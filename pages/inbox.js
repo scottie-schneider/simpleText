@@ -4,9 +4,7 @@ import React, { useState, useEffect } from "react";
 import InboxStyle from '../components/styles/InboxStyle'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft as fasFaArrowLeft } from '@fortawesome/pro-solid-svg-icons'
-import { faArrowRight as fasFaArrowRight } from '@fortawesome/pro-solid-svg-icons'
-
+import { faArrowLeft, faArrowRight, faCommentAlt, faBell, faPencil, faInbox, faPaperPlane, faPencilRuler, faTrash } from '@fortawesome/pro-solid-svg-icons'
 require('isomorphic-fetch');
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -55,106 +53,142 @@ const Inbox = ({ conversations }) => {
   }
 
   return (
-    <main >
-      <InboxStyle>      
-        {/* Main Bar/Nav Bar */}
-        <header class="header">
-          <div class="site-name">
-              <h1 class="desktop">SimpleText</h1>
-              <h1 class="mobile">ST</h1>
-          </div>
-          <div class="bar">
-            <div class="left-content">
-              <FontAwesomeIcon className="left" icon={fasFaArrowLeft} />
-              <FontAwesomeIcon className="right" icon={fasFaArrowRight} />
-
-            </div>
-            <div class="right-content">
-                <div class="messages box">
-                        <a href="#">
-                            <i class="fas fa-comment-alt"></i>
-                            Messages
-                            <span>20</span>
-                        </a>
-                </div>  
-                <div class="messages box">
-                        <a href="#">
-                            <i class="fas fa-bell"></i>
-                            Alerts
-                            <span>10</span>
-                        </a>
-                </div>  
-                <div class="sign-off box" >
-                    <a href="#">Sign Out</a>
-                </div>
-            </div>
-          </div>
-        </header>
-        <div className="main-content">
-          {/* Sidebar */}
-          <div className="sidebar">
-            <div className="sidebar__compose">
-              <a href="#" className="btn compose">
-                Compose <span className="fa fa-pencil"></span>
-              </a>
-            </div>
-            <ul className="sidebar__inboxes">
-              <li onClick={() => { setSidebarSection('inbox'); }}><a>
-                <span className="fa fa-inbox"></span> Inbox
-                <span className="item-count">{unreadCount}</span></a></li>
-              <li onClick={() => { setSidebarSection('sent'); }}><a>
-                <span className="fa fa-paper-plane"></span> Sent
-                <span className="item-count">0</span></a></li>
-              <li onClick={() => { setSidebarSection('drafts'); }}><a>
-                <span className="fa fa-pencil-square-o"></span> Drafts
-                <span className="item-count">0</span>
-                </a></li>
-              <li onClick={() => { setSidebarSection('deleted'); }}><a>
-                <span className="fa fa-trash-o"></span> Trash
-                <span className="item-count">{deletedCount}</span>
-                </a></li>
-            </ul>
-          </div> 
-          {/* End .sidebar */}
-          <div className="content">
-            {/* EMAIL LIST COMPONENT */}
-            <div className="email-list">
-              {
-                conversations.map(conversation => {
-                  return (
-                    <div 
-                      onClick={() => { 
-                        console.log('set the clicked email in state and change to read')
-                        setCurrentconversation(conversation)
-                      }} 
-                      className={conversation === currentConversation ? "email-item" : "selected"}
-                    >
-                      <div className="email-item__unread-dot" data-read={conversation.read}></div>
-                      <div className="email-item__subject truncate">{conversation.subject}</div>
-                      <div className="email-item__details">
-                        <span className="email-item__from truncate">{conversation.from}</span>
-                        <span className="email-item__time truncate">{getPrettyDate(conversation.time)}</span>
-                      </div>
-                    </div>
-                  );
-                })
-              }
-            </div>
-              {/* EMAIL DETAILS COMPONENT */}
-              <div className="email-content">
-              <div className="email-content__header">
-                <h3 className="email-content__subject">{currentConversation.subject}</h3>
-                {currentConversation.tag !== 'deleted' ? "delete button here" : null}
-                <div className="email-content__time">{getDisplayDate(currentConversation)}</div>
-                <div className="email-content__from">{currentConversation.from}</div>
-              </div>
-              <div className="email-content__message">{currentConversation.message}</div>
-            </div>
-          </div>          
-          {/* End .main-content */}
+    <InboxStyle>      
+      {/* Main Bar/Nav Bar */}
+      <header class="header">
+        <div class="site-name">
+            <h1 class="desktop">SimpleText</h1>
         </div>
-			</InboxStyle>
-    </main>
+        <div class="bar">
+          <div className="inboxSelect">
+            <ul>
+              <li onClick={() => { setSidebarSection('inbox'); }}>
+                <a>                  
+                  <p>Inbox</p>                  
+                </a>
+              </li>
+              <li onClick={() => { setSidebarSection('sent'); }}>
+                <a>              
+                  <p>Sent</p>            
+                </a>
+              </li>
+              <li onClick={() => { setSidebarSection('drafts'); }}>
+                <a>                
+                  <p>Drafts</p>
+                </a>
+              </li>
+              <li onClick={() => { setSidebarSection('deleted'); }}>
+                <a>                
+                  <p>Trash</p>                
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="right-content">
+              <div class="messages box">
+                      <a href="#">
+                        <FontAwesomeIcon className="icon" icon={faCommentAlt} />
+                          Messages
+                          <span>20</span>
+                      </a>
+              </div>  
+              <div class="messages box">
+                      <a href="#">
+                        <FontAwesomeIcon className="icon" icon={faBell} />
+                          Alerts
+                          <span>10</span>
+                      </a>
+              </div>  
+              <div class="sign-off box" >
+                  <a href="#">Sign Out</a>
+              </div>
+          </div>
+        </div>
+      </header>
+      <div className="main-content">
+        {/* Sidebar */}
+        <div className="sidebar">
+          <div className="sidebar__compose">
+            <li onClick={() => { setSidebarSection('inbox'); }}>
+              <a>                
+                <p>Compose</p>                
+              </a>
+            </li>
+          </div>
+          <ul className="sidebar__inboxes">
+            <li onClick={() => { setSidebarSection('inbox'); }}>
+              <a>
+                <FontAwesomeIcon className="icon" icon={faInbox} />
+                <p>Inbox</p>
+                <span className="item-count">{unreadCount}</span>
+              </a>
+            </li>
+            <li onClick={() => { setSidebarSection('sent'); }}><a>
+              <FontAwesomeIcon className="icon" icon={faPaperPlane} /> 
+              Sent
+              <span className="item-count">0</span></a></li>
+            <li onClick={() => { setSidebarSection('drafts'); }}><a>
+              <FontAwesomeIcon className="icon" icon={faPencilRuler} />
+              Drafts
+              <span className="item-count">0</span>
+              </a></li>
+            <li onClick={() => { setSidebarSection('deleted'); }}><a>
+              <FontAwesomeIcon className="icon" icon={faTrash} />
+              Trash
+              <span className="item-count">{deletedCount}</span>
+              </a></li>
+          </ul>
+        </div> 
+        {/* End .sidebar */}
+        <div className="content">
+          {/* Tablet and Phone Inbox Selectors */}
+
+          {/* EMAIL LIST COMPONENT */}
+          <div className="email-list">
+            {
+              conversations.map(conversation => {
+                return ( 
+                  <div 
+                    onClick={() => { 
+                      console.log('set the clicked email in state and change to read')
+                      setCurrentconversation(conversation)
+                    }} 
+                    className={conversation !== currentConversation ? "email-item" : "selected"}
+                  >
+                    {/* <div className="email-item__unread-dot" data-read={conversation.read}></div> */}
+                    <div className="email-item__subject truncate">{conversation.subject}</div>
+                    <div className="email-item__details">
+                      <span className="email-item__from truncate">{conversation.from}</span>
+                      <span className="email-item__time truncate">{getPrettyDate(conversation.time)}</span>
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+          {/* EMAIL DETAILS COMPONENT */}
+          <div className="email-content">
+          <div className="email-content__header">
+            <h3 className="email-content__subject">{currentConversation.subject}</h3>
+            {currentConversation.tag !== 'deleted' ? "delete button here" : null}
+            <div className="email-content__time">{getDisplayDate(currentConversation)}</div>
+            <div className="email-content__from">{currentConversation.from}</div>
+          </div>
+          <div className="email-content__message">{currentConversation.message}</div>
+        </div>
+        </div>          
+        {/* Bottom Nav */}
+        <nav class="simple">
+          <ul>
+            <li><a href="#">Inbox</a></li>
+            <li><a href="#">Campaigns</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Sign out</a></li>
+          </ul>
+        </nav>
+        {/* End .main-content */}        
+      </div>
+    </InboxStyle>
   )
 }
 
